@@ -15,13 +15,17 @@ const meta = {
     },
     argTypes: {},
     decorators: [(Story, props) => {
-        worker.use(rest.get<Page>('https://pokeapi.co/api/v2/pokemon', (_, res, ctx) => {
+        worker.use(rest.get<Page>('https://pokeapi.co/api/v2/*', (_, res, ctx) => {
             return res(
                 ctx.json(props.args)
             )
         }))
 
-        return <QueryClientProvider client={new QueryClient()}><Story args={props.args}/></QueryClientProvider>
+        return (
+            <QueryClientProvider client={new QueryClient()}>
+                <Story args={props.args} key={JSON.stringify(props.args)}/>
+            </QueryClientProvider>
+        )
     }]
 } satisfies Meta<typeof App>;
 
@@ -43,11 +47,11 @@ const args = {
 
 export const 포켓몬을_표시한다: Story = {
     args,
-    decorators: [(Story, props) => {
+    decorators: [(Story, ctx) => {
         return (
             <MemoryRouter initialEntries={['/pokemon?page=2']}>
                 <Routes>
-                    <Route path="/:resource" element={<Story args={props.args} key={JSON.stringify(props.args)} />}/>
+                    <Route path="/:resource" element={<Story args={ctx.args} />}/>
                 </Routes>
             </MemoryRouter>
         )
@@ -60,7 +64,7 @@ export const 아이템을_표시한다: Story = {
         return (
             <MemoryRouter initialEntries={['/item?page=1']}>
                 <Routes>
-                    <Route path="/:resource" element={<Story args={ctx.args}/>}/>
+                    <Route path="/:resource" element={<Story args={ctx.args} />}/>
                 </Routes>
             </MemoryRouter>
         )
