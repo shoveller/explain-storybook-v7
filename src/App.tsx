@@ -1,20 +1,21 @@
 import './App.css'
 import {useParams, useSearchParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
+import {FC} from "react";
 
-type Result = {
+export type Result = {
   name: string
   url: string
 }
 
-type Page = {
+export type Page = {
   count: number,
   next: string
   previous: string
   results: Result[]
 }
 
-function App() {
+const App: FC<Partial<Page>> = () => {
   const { resource } = useParams()
   const [params, setParams] = useSearchParams()
   const { page } = Object.fromEntries(params.entries());
