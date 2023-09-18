@@ -6,6 +6,7 @@ import {MemoryRouter, Route, Routes} from "react-router-dom";
 import {getWorker} from "msw-storybook-addon";
 import {rest} from "msw";
 
+const worker = getWorker()
 const meta = {
     title: 'src/App',
     component: App,
@@ -13,8 +14,14 @@ const meta = {
         controls: {expanded: true}
     },
     argTypes: {},
-    decorators: [(Story, ctx) => {
-        return <QueryClientProvider client={new QueryClient()}><Story args={ctx.args}/></QueryClientProvider>
+    decorators: [(Story, props) => {
+        worker.use(rest.get<Page>('https://pokeapi.co/api/v2/pokemon', (_, res, ctx) => {
+            return res(
+                ctx.json(props.args)
+            )
+        }))
+
+        return <QueryClientProvider client={new QueryClient()}><Story args={props.args}/></QueryClientProvider>
     }]
 } satisfies Meta<typeof App>;
 
@@ -34,15 +41,9 @@ const args = {
     ]
 }
 
-const worker = getWorker()
 export const 포켓몬을_표시한다: Story = {
     args,
     decorators: [(Story, props) => {
-        worker.use(rest.get<Page>('https://pokeapi.co/api/v2/pokemon', (_, res, ctx) => {
-            return res(
-                ctx.json(props.args)
-            )
-        }))
         return (
             <MemoryRouter initialEntries={['/pokemon?page=2']}>
                 <Routes>
