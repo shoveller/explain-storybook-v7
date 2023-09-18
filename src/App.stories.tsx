@@ -10,10 +10,6 @@ const worker = getWorker()
 const meta = {
     title: 'src/App',
     component: App,
-    parameters: {
-        controls: {expanded: true}
-    },
-    argTypes: {},
     decorators: [(Story, props) => {
         worker.use(rest.get<Page>('https://pokeapi.co/api/v2/*', (_, res, ctx) => {
             return res(

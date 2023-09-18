@@ -7,6 +7,10 @@ const preview: Preview = {
   parameters: {
     actions: { argTypesRegex: "^on[A-Z].*" },
     controls: {
+      /**
+       * 미리보기 활성화
+       */
+      expanded: true,
       matchers: {
         color: /(background|color)$/i,
         date: /Date$/,
