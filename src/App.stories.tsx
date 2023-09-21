@@ -7,19 +7,22 @@ import {getWorker} from "msw-storybook-addon";
 import {rest} from "msw";
 
 const worker = getWorker()
+const client = new QueryClient();
 const meta = {
     title: 'src/App',
     component: App,
     decorators: [(Story, props) => {
+        worker.resetHandlers();
         worker.use(rest.get<Page>('https://pokeapi.co/api/v2/*', (_, res, ctx) => {
             return res(
                 ctx.json(props.args)
             )
         }))
+        client.refetchQueries()
 
         return (
-            <QueryClientProvider client={new QueryClient()}>
-                <Story args={props.args} key={JSON.stringify(props.args)}/>
+            <QueryClientProvider client={client}>
+                <Story args={props.args} />
             </QueryClientProvider>
         )
     }]
